@@ -1,0 +1,1 @@
+This is my repository for studying go. I will try to study different parts of golang, try it in practice and make small applications for understanding go fluently.
