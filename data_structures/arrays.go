@@ -4,16 +4,15 @@ import "fmt"
 
 // Массивы это структуры фиксированного размера
 // GO гарантирует сохранение порядка в массиве
-type Person struct {
+type Guy struct {
 	Name string
 	Age  int
 }
 
 func Arrays() {
-	arr := [2]Person{ //как структура так и любой другой тип
-		{"Alice", 30},
-		{"Bob", 25},
-	}
+	var arr [2]Guy //как структура так и любой другой тип
+	arr[0] = Guy{"Alice", 30}
+	arr[1] = Guy{"Bob", 25}
 	fmt.Println(arr)
 	printArray(arr) // Передача копии массива
 
@@ -43,7 +42,7 @@ func Arrays() {
 	fmt.Println(slice2) // Выведет [1 2 3]
 }
 
-func printArray(arr [2]Person) {
+func printArray(arr [2]Guy) {
 	fmt.Println(arr)
 }
 
