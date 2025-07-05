@@ -2,6 +2,10 @@ package data_structures
 
 import "fmt"
 
+/*
+Map используется, когда вам нужно эффективно хранить и искать элементы по уникальному ключу.
+map — это хеш-таблица, которая предоставляет операции с временем выполнения O(1) для вставки, удаления и поиска элементов.
+*/
 func Maps() {
 	m := make(map[string]int) //Creating empty map, go give 8 bytes to empty map, keys have to be "hashable"
 

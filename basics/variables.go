@@ -32,6 +32,7 @@ func Variables() {
 		number_x  = 5
 		string_xy = "stringx"
 	)
+	name := "Tom"
 	var string_y = string_x + string_xy
-	fmt.Println(string_y+string_xy, number_x)
+	fmt.Println(string_y+string_xy, number_x, name)
 }
