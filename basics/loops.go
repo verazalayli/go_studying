@@ -8,13 +8,23 @@ func Loops() {
 		fmt.Println(k)
 	}
 
-	//Range-based for
+	//Range-based for slices, maps, arrays, strings and so on
 	name := "GOLANG"
 	for i, s := range name {
 		fmt.Printf("%d -> %c\n", i, s)
 		if i == 5 {
 			break //end cycle
 		}
+	}
+	nums := []int{10, 20, 30}
+	for i, v := range nums {
+		fmt.Printf("index = %d, value = %d\n", i, v)
+	}
+	for _, v := range nums {
+		fmt.Println("value:", v)
+	}
+	for i := range nums {
+		fmt.Println("index:", i)
 	}
 
 	//cycle using continue
