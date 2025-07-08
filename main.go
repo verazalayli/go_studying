@@ -1,28 +1,13 @@
 package main
 
-import (
-	"fmt"
-)
+import "fmt"
 
-type I interface {
-	Foo()
-}
-type S struct{}
-
-func (s *S) Foo() {
-	fmt.Println("foo")
-}
-
-func Build() I {
-	var res *S
-	return res
-}
 func main() {
-	i := Build()
-
-	if i != nil {
-		i.Foo()
-	} else {
-		fmt.Println("nil")
+	first := []int{10, 20, 30, 40}
+	second := make([]*int, len(first))
+	for i, v := range first {
+		second[i] = &v
 	}
+	fmt.Println(second)
+	fmt.Println(*second[0], *second[1])
 }
