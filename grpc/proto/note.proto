@@ -1,0 +1,97 @@
+// Указываем версию синтаксиса Protobuf.
+// proto3 — современный вариант с дефолтными значениями, упрощённой моделью optional и т.д.
+syntax = "proto3";
+
+// Имя proto-пакета (НЕ Go-пакета).
+// Оно будет использоваться в полном имени RPC и типов, например:
+//   /note.v1.NoteService/CreateNote
+// Обычно пишут как <имя_сервиса>.<версия>.
+package note.v1;
+
+// Настройка для Go-плагина protoc.
+// go_package указывает полный путь Go-пакета, куда будет положен сгенерированный код,
+// и алиас пакета через точку с запятой.
+//   - "github.com/verazalayli/go_studying/grpc/pkg/pb" → путь импорта в Go.
+//   - ";pb" → локальное имя пакета в Go (package pb).
+// Если этот путь не совпадёт с модулем, go build начнёт ругаться.
+option go_package = "github.com/verazalayli/go_studying/grpc/pkg/pb;pb";
+
+// ============
+// СООБЩЕНИЯ
+// ============
+
+// Доменная сущность "Заметка" в формате protobuf.
+// Это не Go-структура, но protoc сгенерирует под неё Go-структуру pb.Note.
+message Note {
+  string id = 1;          // Поле №1: уникальный ID заметки (в нашем примере UUID).
+  string title = 2;       // Поле №2: заголовок заметки.
+  string content = 3;     // Поле №3: содержимое заметки.
+  int64  created_at = 4;  // Поле №4: время создания в Unix секундах.
+  // В Go будет int64, потом мы можем конвертить в time.Time.
+}
+
+// Запрос на создание заметки.
+// Содержит только то, что клиент должен прислать (title и content).
+message CreateNoteRequest {
+  string title = 1;       // Заголовок новой заметки.
+  string content = 2;     // Текст новой заметки.
+}
+
+// Ответ на создание заметки.
+// Возвращаем целиком созданный объект Note (с ID и временем создания).
+message CreateNoteResponse {
+  Note note = 1;          // Поле №1: сама заметка.
+}
+
+// Запрос на получение заметки по ID.
+message GetNoteRequest {
+  string id = 1;          // ID заметки, которую хотим получить.
+}
+
+// Ответ на получение заметки по ID.
+message GetNoteResponse {
+  Note note = 1;          // Найденная заметка.
+}
+
+// Запрос на список заметок.
+// Тут нет полей, поэтому просто пустое сообщение.
+// В Go оно будет типом pb.ListNotesRequest{} (без полей).
+message ListNotesRequest {}
+
+// Ответ на список заметок.
+// repeated означает "повторяющееся поле" (массив/слайс).
+// В Go это будет []*pb.Note.
+message ListNotesResponse {
+  repeated Note notes = 1; // Список всех заметок.
+}
+
+// ============
+// СЕРВИС
+// ============
+
+// Описание gRPC-сервиса NoteService.
+// protoc сгенерирует для него:
+//  - На стороне сервера: интерфейс pb.NoteServiceServer, который мы должны реализовать.
+//  - На стороне клиента: интерфейс pb.NoteServiceClient и фабрику pb.NewNoteServiceClient.
+//
+// Каждый rpc принимает одно сообщение (Request) и возвращает одно сообщение (Response).
+// Это unary RPC — 1 запрос, 1 ответ.
+// Есть ещё streaming RPC, но здесь они не используются.
+service NoteService {
+  // Создать заметку.
+  rpc CreateNote(CreateNoteRequest) returns (CreateNoteResponse);
+
+  // Получить заметку по ID.
+  rpc GetNote(GetNoteRequest)       returns (GetNoteResponse);
+
+  // Получить список всех заметок.
+  rpc ListNotes(ListNotesRequest)   returns (ListNotesResponse);
+}
+
+
+/* Чтобы превратить в go код со всеми интерфейсами и тп:
+protoc -I proto \
+  --go_out=pkg/pb --go_opt=paths=source_relative \
+  --go-grpc_out=pkg/pb --go-grpc_opt=paths=source_relative \
+  proto/note.proto
+ */
